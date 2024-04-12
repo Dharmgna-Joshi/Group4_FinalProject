@@ -37,6 +37,10 @@
                 <!-- Text field for entering product quantity -->
                 <asp:TextBox ID="txtQuantity" runat="server" CssClass="quantity-field" TextMode="Number" Min="1" />
                 <asp:Label ID="lblQuantity" runat="server" Text="Quantity: " AssociatedControlID="txtQuantity"></asp:Label>
+                <div class="buttons">
+    <asp:Button ID="btnAddToCart" runat="server" Text="Add to Cart" OnClick="btnAddToCart_Click" />
+    <asp:Button ID="btnGoToCart" runat="server" Text="Go to Cart" OnClick="btnGoToCart_Click" />
+</div>
                 </div>
         </div>
         

@@ -4,6 +4,7 @@ using System.Web.UI.WebControls;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Data;
+using System.Linq;
 namespace Group4_FinalProject
 {
     public partial class Products : Page
@@ -64,6 +65,48 @@ namespace Group4_FinalProject
                 con.Close();
             }
         }
+        protected void btnAddToCart_Click(object sender, EventArgs e)
+        {
+            // Assuming productID is the unique identifier for products
+            int productId = int.Parse(ddlProducts.SelectedValue);
+            int quantity = int.Parse(txtQuantity.Text);
+
+            // Retrieve the current cart from the session (or create a new one)
+            DataTable cart = Session["Cart"] as DataTable;
+            if (cart == null)
+            {
+                cart = new DataTable();
+                cart.Columns.Add("ProductID", typeof(int));
+                cart.Columns.Add("Quantity", typeof(int));
+
+                Session["Cart"] = cart;
+            }
+
+            // Check if the product is already in the cart
+            DataRow existingRow = cart.AsEnumerable().FirstOrDefault(row => (int)row["ProductID"] == productId);
+            if (existingRow != null)
+            {
+                // Update quantity if the item is already in the cart
+                existingRow["Quantity"] = (int)existingRow["Quantity"] + quantity;
+            }
+            else
+            {
+                // Add the new item to the cart
+                DataRow newRow = cart.NewRow();
+                newRow["ProductID"] = productId;
+                newRow["Quantity"] = quantity;
+                cart.Rows.Add(newRow);
+            }
+
+            // Update the session with the new cart
+            Session["Cart"] = cart;
+        }
+        protected void btnGoToCart_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("~/Cart.aspx");
+        }
+
+
 
     }
 }

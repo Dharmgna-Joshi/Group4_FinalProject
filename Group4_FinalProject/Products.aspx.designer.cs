@@ -60,6 +60,24 @@ namespace Group4_FinalProject
         protected global::System.Web.UI.WebControls.Label lblQuantity;
 
         /// <summary>
+        /// btnAddToCart control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnAddToCart;
+
+        /// <summary>
+        /// btnGoToCart control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnGoToCart;
+
+        /// <summary>
         /// imgProduct control.
         /// </summary>
         /// <remarks>
