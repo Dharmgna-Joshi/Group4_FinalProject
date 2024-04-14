@@ -62,6 +62,19 @@ namespace Group4_FinalProject
                 gvCart.DataBind();
             }
         }
+        protected void EmptyCart(object sender, EventArgs e)
+        {
+            // Clear the cart in the session directly
+            Session["Cart"] = null;
+
+            // Bind an empty DataTable to the GridView
+            gvCart.DataSource = new DataTable();
+            gvCart.DataBind();
+
+            // Optionally, show a message or hide the cart table
+            gvCart.Visible = false;
+            lblCartEmptyMessage.Visible = true; // Make sure you have a Label control with ID lblCartEmptyMessage in your .aspx page
+        }
         protected void gvCart_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "Remove")
@@ -85,5 +98,7 @@ namespace Group4_FinalProject
                 }
             }
         }
+       
+
     }
 }
