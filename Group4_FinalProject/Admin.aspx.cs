@@ -16,6 +16,7 @@ namespace Group4_FinalProject
             if (!IsPostBack)
             {
                 BindCategoryGridView(); // Load the categories on initial page load
+                PopulateCategoriesDropDown();
             }
         }
 
@@ -126,6 +127,111 @@ namespace Group4_FinalProject
                     Response.Write("Error: " + ex.Message);
                 }
             }
+        }
+        private void PopulateCategoriesDropDown()
+        {
+            string connStr = WebConfigurationManager.ConnectionStrings["ElectronicsConnectionString"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                SqlCommand cmd = new SqlCommand("SELECT CategoryID, CategoryName FROM Categories", conn);
+                try
+                {
+                    conn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    da.Fill(ds, "Categories");
+                    ddlCategories.DataSource = ds.Tables["Categories"];
+                    ddlCategories.DataTextField = "CategoryName";
+                    ddlCategories.DataValueField = "CategoryID";
+                    ddlCategories.DataBind();
+
+                    ddlCategories.Items.Insert(0, new ListItem("-- Select Category --", ""));
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions
+                }
+            }
+        }
+        protected void ddlCategories_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            GridViewProducts.DataSourceID = "SqlDataSourceProducts";
+            GridViewProducts.DataBind();
+        }
+
+        protected void GridViewProducts_RowEditing(object sender, GridViewEditEventArgs e)
+        {
+            GridViewProducts.EditIndex = e.NewEditIndex;
+            GridViewProducts.DataBind();
+        }
+
+        protected void GridViewProducts_RowUpdating(object sender, GridViewUpdateEventArgs e)
+        {
+            // Retrieve row from the grid
+            GridViewRow row = GridViewProducts.Rows[e.RowIndex];
+            string productName = ((TextBox)row.Cells[1].Controls[0]).Text;
+            string description = ((TextBox)row.Cells[2].Controls[0]).Text;
+            int productId = Convert.ToInt32(GridViewProducts.DataKeys[e.RowIndex].Value);
+
+            // Perform the update operation
+            UpdateProduct(productId, productName, description);
+
+            // Reset the edit index and refresh the grid
+            GridViewProducts.EditIndex = -1;
+            GridViewProducts.DataBind();
+        }
+
+        private void UpdateProduct(int productId, string productName, string description)
+        {
+            string connStr = WebConfigurationManager.ConnectionStrings["ElectronicsConnectionString"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                SqlCommand cmd = new SqlCommand("UPDATE Products SET ProductName=@ProductName, Description=@Description WHERE ProductID=@ProductID", conn);
+                cmd.Parameters.AddWithValue("@ProductName", productName);
+                cmd.Parameters.AddWithValue("@Description", description);
+                cmd.Parameters.AddWithValue("@ProductID", productId);
+                try
+                {
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions
+                }
+            }
+        }
+
+        protected void GridViewProducts_RowDeleting(object sender, GridViewDeleteEventArgs e)
+        {
+            int productId = Convert.ToInt32(GridViewProducts.DataKeys[e.RowIndex].Value);
+            DeleteProduct(productId);
+            GridViewProducts.DataBind();
+        }
+
+        private void DeleteProduct(int productId)
+        {
+            string connStr = WebConfigurationManager.ConnectionStrings["ElectronicsConnectionString"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                SqlCommand cmd = new SqlCommand("DELETE FROM Products WHERE ProductID=@ProductID", conn);
+                cmd.Parameters.AddWithValue("@ProductID", productId);
+                try
+                {
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions
+                }
+            }
+        }
+
+        protected void GridViewProducts_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+        {
+            GridViewProducts.EditIndex = -1;
+            GridViewProducts.DataBind();
         }
     }
 }

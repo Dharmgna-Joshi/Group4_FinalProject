@@ -15,69 +15,64 @@
             margin-bottom: 15px;
         }
 
-            .form-section label {
-                display: block;
-                margin-bottom: 5px;
-                color: #555;
-            }
+        .form-section label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
 
-            .form-section input[type="text"],
-            .form-section input[type="email"],
-            .form-section input[type="password"],
-            .form-section select {
-                width: 100%;
-                padding: 8px;
-                box-sizing: border-box;
-                margin-bottom: 10px;
-            }
+        .form-section input[type="text"],
+        .form-section input[type="email"],
+        .form-section input[type="password"],
+        .form-section select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
 
         .form-actions {
             text-align: center;
             margin-top: 15px;
         }
 
-        .edit-button {
-            color: #fff;
-            background-color: #28a745; /* Bootstrap green */
+        .edit-button, .delete-button {
             padding: 5px 10px;
-            border-radius: 4px;
+            color: white;
             text-decoration: none;
-            margin-right: 5px;
+            border-radius: 4px;
+            cursor: pointer;
         }
 
-        .delete-button {
-            color: #fff;
-            background-color: #dc3545; /* Bootstrap red */
-            padding: 5px 10px;
-            border-radius: 4px;
-            text-decoration: none;
-        }
+        .edit-button { background-color: #28a745; } /* Green */
+        .delete-button { background-color: #dc3545; } /* Red */
 
         .grid-view-table {
             width: 100%;
             border-collapse: collapse;
         }
 
-            .grid-view-table th, .grid-view-table td {
-                border: 1px solid #dee2e6; /* Light grey border */
-                padding: 8px;
-                text-align: left;
-            }
+        .grid-view-table th, .grid-view-table td {
+            border: 1px solid #dee2e6; /* Light grey border */
+            padding: 8px;
+            text-align: left;
+        }
 
-            .grid-view-table th {
-                background-color: #f8f9fa; /* Light background on headers */
-            }
+        .grid-view-table th {
+            background-color: #f8f9fa; /* Light background on headers */
+        }
 
-            /* Hover effect for rows */
-            .grid-view-table tr:hover {
-                background-color: #f1f1f1;
-            }
+        .grid-view-table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown-wide {
+            width: 100%; /* Full width of the container */
+        }
     </style>
 
-
-
     <h2>Category Management</h2>
-   <asp:GridView ID="GridViewCategory" runat="server" AutoGenerateColumns="False" DataKeyNames="CategoryID"
+    <asp:GridView ID="GridViewCategory" runat="server" AutoGenerateColumns="False" DataKeyNames="CategoryID"
         CssClass="grid-view-table"
         OnRowEditing="GridViewCategory_RowEditing" OnRowDeleting="GridViewCategory_RowDeleting"
         OnRowUpdating="GridViewCategory_RowUpdating" OnRowCancelingEdit="GridViewCategory_RowCancelingEdit">
@@ -88,9 +83,6 @@
             <asp:CommandField ShowEditButton="True" ButtonType="Link" EditText="Edit" ControlStyle-CssClass="edit-button" />
             <asp:CommandField ShowDeleteButton="True" ButtonType="Link" DeleteText="Delete" ControlStyle-CssClass="delete-button" />
         </Columns>
-        <RowStyle BackColor="#f9f9f9" />
-        <AlternatingRowStyle BackColor="#fcfcfc" />
-        <HeaderStyle BackColor="#e9ecef" Font-Bold="True" />
     </asp:GridView>
 
     <asp:SqlDataSource ID="SqlDataSourceCategory" runat="server"
@@ -108,6 +100,35 @@
         </DeleteParameters>
     </asp:SqlDataSource>
 
+    <!-- Dropdown for selecting categories -->
+    <h2>Select Category to View Products</h2>
+    <asp:DropDownList ID="ddlCategories" runat="server" CssClass="dropdown-wide" AutoPostBack="true" OnSelectedIndexChanged="ddlCategories_SelectedIndexChanged">
+    </asp:DropDownList>
 
+    <!-- GridView for Products -->
+    <h2>Product Management</h2>
+    <asp:GridView ID="GridViewProducts" runat="server" AutoGenerateColumns="False" DataKeyNames="ProductID"
+        CssClass="grid-view-table"
+        OnRowEditing="GridViewProducts_RowEditing" OnRowDeleting="GridViewProducts_RowDeleting"
+        OnRowUpdating="GridViewProducts_RowUpdating" OnRowCancelingEdit="GridViewProducts_RowCancelingEdit">
+        <Columns>
+            <asp:BoundField DataField="ProductID" HeaderText="Product ID" ReadOnly="True" />
+            <asp:BoundField DataField="ProductName" HeaderText="Product Name" />
+            <asp:BoundField DataField="Description" HeaderText="Description" />
+            <asp:CommandField ShowEditButton="True" ButtonType="Link" EditText="Edit" ControlStyle-CssClass="edit-button" />
+            <asp:CommandField ShowDeleteButton="True" ButtonType="Link" DeleteText="Delete" ControlStyle-CssClass="delete-button" />
+        </Columns>
+    </asp:GridView>
+
+    <!-- SqlDataSource for Products GridView -->
+    <asp:SqlDataSource ID="SqlDataSourceProducts" runat="server"
+        ConnectionString="<%$ ConnectionStrings:ElectronicsConnectionString %>"
+        SelectCommand="SELECT * FROM Products WHERE CategoryID=@CategoryID"
+        UpdateCommand="UPDATE Products SET ProductName=@ProductName, Description=@Description WHERE ProductID=@ProductID"
+        DeleteCommand="DELETE FROM Products WHERE ProductID=@ProductID">
+        <SelectParameters>
+            <asp:ControlParameter Name="CategoryID" Type="Int32" ControlID="ddlCategories" PropertyName="SelectedValue" />
+        </SelectParameters>
+    </asp:SqlDataSource>
 
 </asp:Content>
