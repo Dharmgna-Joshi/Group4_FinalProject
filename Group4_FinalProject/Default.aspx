@@ -56,7 +56,6 @@
         <div class="jumbotron">
             <h1>Welcome to our Online Electronics Store</h1>
             <p>Discover the latest gadgets, appliances, and electronics!</p>
-            <a href="Products.aspx" class="btn btn-primary">Shop Now</a>
         </div>
 
         <div class="row">
