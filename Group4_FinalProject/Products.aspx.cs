@@ -13,6 +13,13 @@ namespace Group4_FinalProject
         {
             if (!IsPostBack)
             {
+                
+                if (Session["Username"] != null)
+                {
+                    string username = Session["Username"].ToString();
+                    // Assuming you have a label named lblUsername on your page
+                    lblUsername.Text = "Welcome, " + username;
+                }
                 PopulateProductsDropdown();
             }
         }

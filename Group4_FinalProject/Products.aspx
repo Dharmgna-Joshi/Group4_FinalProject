@@ -76,7 +76,9 @@
     </style>
 
     <h2>Products</h2>
-
+    <div>
+        <asp:Label ID="lblUsername" runat="server" CssClass="boldLabel"></asp:Label>
+    </div>
     <div class="product-info-container">
         <!-- Container for selecting the product -->
         <div class="product-details">
